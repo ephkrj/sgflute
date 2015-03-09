@@ -3435,7 +3435,7 @@ void EpiModel::run(void) {
 #endif
 	while (nTimer < nRunLength * 2) {
 		if (nLogFileInterval > 0 && (int) (nTimer / 2) % nLogFileInterval == 0)
-			//log();
+			log();
 			if (bSeedDaily) {
 				seedinfected();
 
@@ -3489,5 +3489,5 @@ void EpiModel::run(void) {
 	if (logfile)
 		(*logfile).close();
 	summary();
-	//outputIndividuals();
+	outputIndividuals();
 }
