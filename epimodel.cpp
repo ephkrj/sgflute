@@ -1,5 +1,5 @@
 /* class EpiModel implementation
- *
+ * add this line in
  * Implements a stochastic influenza epidemic simulator.
  */
 
@@ -21,8 +21,8 @@ extern "C" {
 
 using namespace std;
 
-const int nVersionMajor = 2;
-const int nVersionMinor = 0;
+const int nVersionMajor = 1;
+const int nVersionMinor = 15;
 
 #define get_rand_double dsfmt_genrand_close_open(&dsfmt)
 #define get_rand_uint32 dsfmt_genrand_uint32(&dsfmt)
@@ -493,44 +493,19 @@ void EpiModel::initPopulation(void) {
 	 */
 //creating Communities/subzones from ider
 	int pindex = 0; //index of population by the ordering of the data, instead of person's id
-	int zone_subzone[] = { 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8,
-			2, 9, 2, 10, 2, 11, 2, 12, 2, 13, 2, 14, 2, 15, 2, 16, 3, 17, 3, 18,
-			3, 19, 4, 215, 4, 216, 4, 217, 4, 218, 5, 20, 5, 21, 5, 22, 5, 23,
-			5, 24, 5, 25, 5, 26, 5, 27, 5, 219, 6, 28, 6, 29, 6, 30, 6, 31, 6,
-			32, 6, 33, 6, 34, 6, 35, 6, 36, 6, 37, 6, 38, 6, 39, 6, 40, 6, 41,
-			6, 42, 6, 42, 6, 42, 7, 43, 7, 44, 7, 45, 7, 46, 7, 47, 7, 48, 7,
-			49, 8, 50, 8, 51, 8, 52, 8, 53, 8, 54, 8, 55, 8, 56, 8, 57, 9, 220,
-			10, 58, 10, 59, 10, 59, 11, 221, 12, 60, 12, 61, 12, 62, 12, 63, 12,
-			64, 12, 65, 12, 66, 13, 67, 13, 68, 13, 69, 13, 70, 13, 71, 13, 72,
-			13, 73, 13, 74, 13, 74, 14, 75, 14, 76, 14, 76, 14, 76, 14, 76, 14,
-			76, 14, 76, 14, 76, 14, 76, 14, 76, 14, 76, 14, 76, 15, 77, 15, 78,
-			15, 79, 15, 80, 15, 81, 16, 82, 16, 83, 16, 84, 16, 85, 16, 86, 16,
-			87, 16, 87, 17, 88, 17, 89, 17, 90, 17, 91, 17, 92, 17, 93, 17, 94,
-			17, 94, 17, 94, 17, 94, 18, 95, 18, 96, 18, 97, 18, 98, 18, 99, 18,
-			100, 18, 101, 18, 101, 18, 101, 19, 102, 19, 103, 19, 104, 19, 105,
-			19, 106, 19, 107, 19, 108, 19, 109, 19, 109, 20, 222, 21, 110, 22,
-			223, 23, 224, 24, 111, 24, 112, 24, 113, 24, 225, 24, 226, 25, 227,
-			25, 228, 25, 229, 26, 114, 26, 115, 26, 116, 26, 117, 26, 117, 26,
-			117, 27, 230, 28, 118, 28, 119, 28, 120, 28, 121, 28, 122, 29, 231,
-			29, 232, 29, 233, 30, 214, 31, 123, 31, 124, 31, 125, 31, 126, 32,
-			127, 32, 128, 32, 129, 32, 130, 32, 131, 32, 132, 32, 132, 33, 234,
-			33, 235, 33, 236, 33, 237, 33, 238, 34, 239, 34, 240, 34, 241, 34,
-			242, 34, 243, 35, 133, 35, 134, 35, 135, 35, 136, 35, 137, 35, 137,
-			36, 138, 36, 139, 36, 140, 36, 141, 36, 142, 36, 143, 36, 144, 36,
-			145, 36, 146, 36, 147, 36, 148, 36, 148, 36, 148, 36, 148, 36, 244,
-			37, 149, 37, 150, 37, 151, 37, 152, 37, 153, 38, 154, 38, 155, 38,
-			156, 38, 157, 38, 158, 38, 159, 38, 159, 38, 159, 38, 159, 38, 159,
-			39, 245, 40, 160, 40, 161, 40, 162, 40, 163, 40, 164, 40, 165, 40,
-			165, 40, 165, 40, 165, 41, 166, 41, 167, 41, 168, 41, 169, 41, 170,
-			41, 171, 42, 172, 42, 173, 42, 174, 42, 175, 43, 246, 44, 176, 44,
-			177, 44, 177, 45, 247, 45, 248, 46, 249, 47, 250, 47, 251, 47, 252,
-			47, 253, 47, 254, 48, 178, 48, 179, 48, 180, 48, 181, 48, 255, 49,
-			182, 49, 183, 49, 184, 49, 185, 50, 256, 51, 186, 51, 187, 51, 188,
-			51, 189, 51, 190, 51, 191, 51, 192, 51, 193, 51, 194, 51, 195, 51,
-			196, 51, 197, 52, 257, 52, 258, 52, 259, 52, 260, 52, 261, 52, 262,
-			53, 263, 53, 264, 54, 265, 55, 198, 55, 199, 55, 200, 55, 201, 55,
-			202, 55, 203, 55, 204, 55, 204, 55, 204, 56, 205, 56, 206, 56, 207,
-			56, 208, 56, 209, 56, 210, 56, 211, 56, 212, 56, 213 };
+	int zone_subzone[] = { 1,0,1,1,1,2,1,3,1,4,1,5,1,6,1,7,1,8,2,9,2,10,2,11,2,12,2,13,2,14,2,15,2,16,3,17,3,18,3,19,4,20,4,21,4,22,
+4,23,5,24,5,25,5,26,5,27,5,28,5,29,5,30,5,31,5,32,6,33,6,34,6,35,6,36,6,37,6,38,6,39,6,40,6,41,6,42,6,43,6,44,6,45,6,46,6,47,7,48,7,
+49,7,50,7,51,7,52,7,53,7,54,8,55,8,56,8,57,8,58,8,59,8,60,8,61,8,62,9,63,10,64,10,65,11,66,12,67,12,68,12,69,12,70,12,71,12,72,12,73,
+13,74,13,75,13,76,13,77,13,78,13,79,13,80,13,81,14,82,14,83,15,84,15,85,15,86,15,87,15,88,16,89,16,90,16,91,16,92,16,93,16,94,17,95,17,
+96,17,97,17,98,17,99,17,100,17,101,18,102,18,103,18,104,18,105,18,106,18,107,18,108,19,109,19,110,19,111,19,112,19,113,19,114,19,115,19,
+116,20,117,21,118,22,119,23,120,24,121,24,122,24,123,24,124,24,125,25,126,25,127,25,128,26,129,26,130,26,131,26,132,27,133,28,134,28,135,
+28,136,28,137,28,138,29,139,29,140,29,141,30,142,31,143,31,144,31,145,31,146,32,147,32,148,32,149,32,150,32,151,32,152,33,153,33,154,33,155,
+33,156,33,157,34,158,34,159,34,160,34,161,34,162,35,163,35,164,35,165,35,166,35,167,36,168,36,169,36,170,36,171,36,172,36,173,36,174,36,175,
+36,176,36,177,36,178,36,179,37,180,37,181,37,182,37,183,37,184,38,185,38,186,38,187,38,188,38,189,38,190,39,191,40,192,40,193,40,194,40,195,
+40,196,40,197,41,198,41,199,41,200,41,201,41,202,41,203,42,204,42,205,42,206,42,207,43,208,44,209,44,210,45,211,45,212,46,213,47,214,47,215,
+47,216,47,217,47,218,48,219,48,220,48,221,48,222,48,223,49,224,49,225,49,226,49,227,50,228,51,229,51,230,51,231,51,232,51,233,51,234,51,235,
+51,236,51,237,51,238,51,239,51,240,52,241,52,242,52,243,52,244,52,245,52,246,53,247,53,248,54,249,55,250,55,251,55,252,55,253,55,254,55,255,
+55,256,56,257,56,258,56,259,56,260,56,261,56,262,56,263,56,264,56,265};
 
 	for (int i = 0; i < 266; i++) {
 
@@ -549,7 +524,7 @@ void EpiModel::initPopulation(void) {
 		memset(c.nEverSymptomatic, 0, TAG * sizeof(int));
 		memset(c.nEverAscertained, 0, TAG * sizeof(int));
 		memset(c.nNumAge, 0, TAG * sizeof(int));
-		for (int k = 1; k < 608; k = k + 2) {
+		for (int k = 1; k < 2*266; k = k + 2) {
 			if (c.id == zone_subzone[k]) {
 				c.nTractID = zone_subzone[k - 1];
 				break;
@@ -613,7 +588,7 @@ void EpiModel::initPopulation(void) {
 	 */
 	//Creating Tracts/zones from ider
 	//Tracts defined to be zones, hence 56 tracts
-	int cindex = 0;
+	
 	for (int i = 0; i < 56; i++) {
 		Tract t;
 		//t.id=ider[i];						//tract id is zone code
@@ -644,22 +619,17 @@ void EpiModel::initPopulation(void) {
 		t.censuspopulation = t.nNumResidents;
 		sort(temp.begin(), temp.end());
 		temp.erase(unique(temp.begin(), temp.end()), temp.end());
-		if (t.nNumResidents > 0) {
-			t.nFirstCommunity = cindex;
-			//Assigning track id to community
-			for (size_t j = 0, Max = temp.size(); j != Max; j++) {
-				for (std::vector<Community>::iterator it = commvec.begin(),
-						end = commvec.end(); it != end; it++) {
-					Community &c = *it;
-					if (c.id == temp[j]) {
-						//c.nTractID=t.id;
-						cindex++; //count the number of coummunities in each tract
-					}
-				}
+		//most likely will rewrite the 2 loops at the bootom to something better i.e map<>
+		for(int i=0;i< 2*266; i = i + 2) {
+			if(t.id+1==zone_subzone[i]){
+				t.nFirstCommunity=zone_subzone[i+1];
+				break;
 			}
-			t.nLastCommunity = cindex - 1;
-		} else
-			t.nFirstCommunity = t.nLastCommunity = 0;
+		}
+		for(int i=0;i< 2*266; i = i + 2) 
+			if(t.id+1==zone_subzone[i])
+				t.nLastCommunity=zone_subzone[i+1];
+		
 		tractvec.push_back(t);
 	}
 
@@ -764,19 +734,17 @@ void EpiModel::initPopulation(void) {
 	}
 
 	cout << pvec.size() << endl;
-	int workers = 0, pworkers = 0;
-	for (vector<Community>::iterator it = commvec.begin(); it != cend; it++) {
+	//int workers = 0, pworkers = 0;
+	/*for (vector<Community>::iterator it = commvec.begin(); it != cend; it++) {
 		Community &comm = *it;
 		workers += comm.nNumWorkers;
 		//cout<<comm.id<<","<<comm.nNumResidents<<","<<comm.nNumNonWorkers<<","<<comm.nNumWorkers<<endl;//TEST
-	}
-	for (vector<Person>::iterator it = pvec.begin(); it != pvec.end(); it++) {
-		Person &p = *it;
-		if (isWorkingAge(p))
-			if (p.work == 1)
-				pworkers++;
-	}
-	cout << pworkers << "," << workers << endl;
+	}*/
+	/*for(int i=0;i<commvec.size();i++){
+		cout<<commvec[i].id<<","<<commvec[i].nNumAge[0]<<","<<commvec[i].nNumAge[1]<<","<<commvec[i].nNumAge[2]<<","<<commvec[i].nNumAge[3]<<","<<commvec[i].nNumAge[4]<<endl;
+	}*/
+	//cout<<nTotal[0]<<","<<nTotal[1]<<","<<nTotal[2]<<","<<nTotal[3]<<","<<nTotal[4]<<endl;
+	//cout << pworkers << "," << workers << endl;
 	/*int ser=80;
 	 nNumPerson=pvec.size();
 	 seedinfected();
@@ -3435,7 +3403,7 @@ void EpiModel::run(void) {
 #endif
 	while (nTimer < nRunLength * 2) {
 		if (nLogFileInterval > 0 && (int) (nTimer / 2) % nLogFileInterval == 0)
-			//log();
+			log();
 			if (bSeedDaily) {
 				seedinfected();
 
@@ -3489,5 +3457,5 @@ void EpiModel::run(void) {
 	if (logfile)
 		(*logfile).close();
 	summary();
-	//outputIndividuals();
+	outputIndividuals();
 }
